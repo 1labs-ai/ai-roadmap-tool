@@ -25,7 +25,6 @@ interface RoadmapData {
   frontend: string;
   backend: string;
   hosting: string;
-  timeline: string;
   northStar: string;
   thirtyDayGoals: string;
 }
@@ -43,7 +42,7 @@ export default function Home() {
       { name: '', userStory: '', priority: 'nice-to-have' },
     ],
     notBuilding: '', llmChoice: '', vectorDb: '', frontend: '', backend: '',
-    hosting: '', timeline: '6-weeks', northStar: '', thirtyDayGoals: '',
+    hosting: '', northStar: '', thirtyDayGoals: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -90,68 +89,98 @@ export default function Home() {
     }
   };
 
+  // Logo Component
+  const Logo = () => (
+    <a href="https://1labs.ai" className="flex items-center gap-2.5 font-semibold text-[19px] tracking-tight glass px-4 py-2 rounded-full shadow-sm card-hover">
+      <svg width="36" height="36" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#7C3AED"/>
+            <stop offset="40%" stopColor="#EC4899"/>
+            <stop offset="100%" stopColor="#FDF2F8"/>
+          </linearGradient>
+        </defs>
+        <rect width="80" height="80" rx="18" fill="#0A0A0A"/>
+        <g transform="translate(10, 13)">
+          <path d="M2 27 C2 12, 15 12, 30 27 C45 42, 58 42, 58 27 C58 12, 45 12, 30 27 C15 42, 2 42, 2 27 Z" fill="none" stroke="url(#logoGrad)" strokeWidth="5" strokeLinecap="round"/>
+          <rect x="26" y="0" width="8" height="54" rx="4" fill="url(#logoGrad)"/>
+        </g>
+      </svg>
+      <span className="flex items-baseline">
+        <span className="font-bold gradient-text">1</span>
+        <span className="text-[#090221] font-semibold">Labs</span>
+        <span className="text-pink-500 font-semibold">.ai</span>
+      </span>
+    </a>
+  );
+
   // Completion Screen
   if (isComplete) {
     return (
-      <main className="min-h-screen bg-[#0a0a0a] bg-grid flex items-center justify-center p-6">
-        <div className="max-w-lg text-center animate-fade-in">
-          <div className="w-20 h-20 btn-gradient rounded-full flex items-center justify-center mx-auto mb-8">
+      <main className="min-h-screen bg-white flex items-center justify-center p-6">
+        <div className="max-w-lg text-center fade-in-up">
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl">
             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-4">Your Roadmap is Ready! 🚀</h1>
-          <p className="text-[#a1a1aa] text-lg mb-10 leading-relaxed">
+          <h1 className="text-4xl font-medium text-[#131314] mb-4 tracking-tight">Your Roadmap is Ready! 🚀</h1>
+          <p className="text-lg text-[#6e6d73] mb-10 leading-relaxed">
             Want help executing it? We&apos;ve helped 50+ founders ship AI products in 6 weeks.
           </p>
           <a 
             href="https://calendly.com/heemang-1labs/30min"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block btn-gradient px-10 py-4 rounded-full text-lg"
+            className="inline-block btn-primary px-10 py-4 text-base"
           >
-            Book a Free Strategy Call
+            Book a Free Strategy Call →
           </a>
-          <p className="text-[#52525b] text-sm mt-8">1labs.ai</p>
+          <p className="text-gray-400 text-sm mt-8">
+            <a href="https://1labs.ai" className="hover:text-purple-600 transition">1labs.ai</a>
+          </p>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] bg-grid">
+    <main className="min-h-screen bg-white">
+      {/* Subtle Background Gradient */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-white via-purple-50/30 to-white pointer-events-none" />
+      
       {/* Header */}
-      <header className="border-b border-[#27272a] bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a href="https://1labs.ai" className="flex items-center gap-1.5">
-            <span className="text-xl font-bold gradient-text">1Labs</span>
-            <span className="text-white/90 text-xl font-semibold">.ai</span>
-          </a>
-          {step > 0 && (
-            <div className="flex items-center gap-4">
-              <span className="text-[#a1a1aa] text-sm">{step} / {totalSteps - 1}</span>
-              <div className="w-28 h-1.5 progress-bar">
-                <div className="progress-fill" style={{ width: `${(step / (totalSteps - 1)) * 100}%` }} />
-              </div>
+      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 py-6 md:px-10 max-w-[1400px] mx-auto w-full">
+        <Logo />
+        {step > 0 && (
+          <div className="glass px-4 py-2 rounded-full flex items-center gap-4 shadow-sm">
+            <span className="text-[#58585a] text-sm font-medium">{step} / {totalSteps - 1}</span>
+            <div className="w-24 h-1.5 progress-bar">
+              <div className="progress-fill" style={{ width: `${(step / (totalSteps - 1)) * 100}%` }} />
             </div>
-          )}
-        </div>
-      </header>
+          </div>
+        )}
+      </nav>
 
-      <div className="max-w-2xl mx-auto px-6 py-16">
+      <div className="max-w-2xl mx-auto px-6 pt-32 pb-20">
         {/* Step 0: Lead Capture */}
         {step === 0 && (
-          <div className="text-center animate-fade-in">
-            <span className="badge mb-8 inline-block">Free Tool</span>
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+          <div className="text-center fade-in-up">
+            {/* Badge */}
+            <div className="badge mb-8 inline-flex">
+              <span className="opacity-80">Free Tool from</span>
+              <span className="font-bold gradient-text-animated">ProductOS</span>
+            </div>
+            
+            <h1 className="text-[44px] md:text-[56px] leading-[1.1] font-medium tracking-[-2px] text-[#131314] mb-6">
               AI Product<br />
               <span className="gradient-text">Roadmap</span>
             </h1>
-            <p className="text-xl text-[#a1a1aa] mb-12 max-w-md mx-auto leading-relaxed">
+            <p className="text-xl text-[#6e6d73] mb-12 max-w-md mx-auto leading-relaxed font-medium">
               The framework we use to take AI products from idea to MVP in 6 weeks.
             </p>
             
-            <div className="card p-8 glow max-w-md mx-auto">
+            <div className="glass-card rounded-[32px] p-8 md:p-10 max-w-md mx-auto card-hover">
               <div className="space-y-4">
                 <input
                   type="text"
@@ -184,12 +213,15 @@ export default function Home() {
                 <button
                   onClick={handleLeadSubmit}
                   disabled={!lead.name || !lead.email || !lead.company}
-                  className="w-full btn-gradient py-4 rounded-xl text-base mt-2"
+                  className="w-full btn-primary py-4 text-[15px] mt-2 flex items-center justify-center gap-2"
                 >
-                  Start Building My Roadmap →
+                  Start Building My Roadmap
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
                 </button>
               </div>
-              <p className="text-[#52525b] text-sm mt-6">
+              <p className="text-gray-400 text-sm mt-6 text-center">
                 Free forever. No credit card required.
               </p>
             </div>
@@ -198,18 +230,18 @@ export default function Home() {
 
         {/* Step 1: Product Vision */}
         {step === 1 && (
-          <div className="card p-8 animate-fade-in">
+          <div className="glass-card rounded-[32px] p-8 md:p-10 fade-in-up">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 btn-gradient rounded-xl flex items-center justify-center text-xl font-bold">1</div>
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-lg">1</div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Product Vision & Problem</h2>
-                <p className="text-[#a1a1aa]">Define what you&apos;re building and why</p>
+                <h2 className="text-2xl font-semibold text-[#131314] tracking-tight">Product Vision & Problem</h2>
+                <p className="text-[#6e6d73]">Define what you&apos;re building and why</p>
               </div>
             </div>
             
             <div className="space-y-6">
               <div>
-                <label className="block text-white font-medium mb-2">What problem are you solving?</label>
+                <label className="block text-[#131314] font-medium mb-2">What problem are you solving?</label>
                 <textarea
                   value={roadmap.problem}
                   onChange={(e) => setRoadmap({ ...roadmap, problem: e.target.value })}
@@ -218,7 +250,7 @@ export default function Home() {
                 />
               </div>
               <div>
-                <label className="block text-white font-medium mb-2">Who experiences this problem?</label>
+                <label className="block text-[#131314] font-medium mb-2">Who experiences this problem?</label>
                 <textarea
                   value={roadmap.targetAudience}
                   onChange={(e) => setRoadmap({ ...roadmap, targetAudience: e.target.value })}
@@ -227,7 +259,7 @@ export default function Home() {
                 />
               </div>
               <div>
-                <label className="block text-white font-medium mb-2">How do they solve it today?</label>
+                <label className="block text-[#131314] font-medium mb-2">How do they solve it today?</label>
                 <textarea
                   value={roadmap.currentSolution}
                   onChange={(e) => setRoadmap({ ...roadmap, currentSolution: e.target.value })}
@@ -236,7 +268,7 @@ export default function Home() {
                 />
               </div>
               <div>
-                <label className="block text-white font-medium mb-2">Why is AI the right approach?</label>
+                <label className="block text-[#131314] font-medium mb-2">Why is AI the right approach?</label>
                 <textarea
                   value={roadmap.whyAI}
                   onChange={(e) => setRoadmap({ ...roadmap, whyAI: e.target.value })}
@@ -244,10 +276,8 @@ export default function Home() {
                   className="input h-28 resize-none"
                 />
               </div>
-              <div className="bg-[#a855f7]/10 border border-[#a855f7]/20 rounded-xl p-4">
-                <p className="text-[#c084fc] text-sm">
-                  💡 If you can&apos;t explain the problem in one sentence, you don&apos;t understand it well enough.
-                </p>
+              <div className="tip-box">
+                <p>💡 If you can&apos;t explain the problem in one sentence, you don&apos;t understand it well enough.</p>
               </div>
             </div>
           </div>
@@ -255,18 +285,18 @@ export default function Home() {
 
         {/* Step 2: Target Users */}
         {step === 2 && (
-          <div className="card p-8 animate-fade-in">
+          <div className="glass-card rounded-[32px] p-8 md:p-10 fade-in-up">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 btn-gradient rounded-xl flex items-center justify-center text-xl font-bold">2</div>
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-lg">2</div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Target Users & Validation</h2>
-                <p className="text-[#a1a1aa]">Define your ICP and validate demand</p>
+                <h2 className="text-2xl font-semibold text-[#131314] tracking-tight">Target Users & Validation</h2>
+                <p className="text-[#6e6d73]">Define your ICP and validate demand</p>
               </div>
             </div>
             
             <div className="space-y-6">
               <div>
-                <label className="block text-white font-medium mb-2">Ideal Customer Profile</label>
+                <label className="block text-[#131314] font-medium mb-2">Ideal Customer Profile</label>
                 <textarea
                   value={roadmap.icp}
                   onChange={(e) => setRoadmap({ ...roadmap, icp: e.target.value })}
@@ -275,7 +305,7 @@ export default function Home() {
                 />
               </div>
               <div>
-                <label className="block text-white font-medium mb-2">Where do they hang out?</label>
+                <label className="block text-[#131314] font-medium mb-2">Where do they hang out?</label>
                 <textarea
                   value={roadmap.whereTheyHangout}
                   onChange={(e) => setRoadmap({ ...roadmap, whereTheyHangout: e.target.value })}
@@ -284,7 +314,7 @@ export default function Home() {
                 />
               </div>
               <div>
-                <label className="block text-white font-medium mb-3">Validation evidence</label>
+                <label className="block text-[#131314] font-medium mb-3">Validation evidence</label>
                 <div className="space-y-3">
                   {[
                     { id: 'interviews', label: 'Customer interviews (10+)', desc: 'Talked to potential users' },
@@ -295,14 +325,14 @@ export default function Home() {
                     <button
                       key={item.id}
                       onClick={() => toggleValidation(item.id)}
-                      className={`w-full flex items-start gap-4 p-4 rounded-xl border transition-all ${
+                      className={`w-full flex items-start gap-4 p-4 rounded-2xl border transition-all text-left ${
                         roadmap.validationEvidence.includes(item.id)
-                          ? 'bg-[#a855f7]/10 border-[#a855f7]'
-                          : 'bg-[#18181b] border-[#27272a] hover:border-[#3f3f46]'
+                          ? 'bg-purple-50 border-purple-300'
+                          : 'bg-white border-gray-200 hover:border-gray-300'
                       }`}
                     >
                       <div className={`w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-all ${
-                        roadmap.validationEvidence.includes(item.id) ? 'bg-[#a855f7] border-[#a855f7]' : 'border-[#52525b]'
+                        roadmap.validationEvidence.includes(item.id) ? 'bg-purple-500 border-purple-500' : 'border-gray-300'
                       }`}>
                         {roadmap.validationEvidence.includes(item.id) && (
                           <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,9 +340,9 @@ export default function Home() {
                           </svg>
                         )}
                       </div>
-                      <div className="text-left">
-                        <p className="text-white font-medium">{item.label}</p>
-                        <p className="text-[#71717a] text-sm">{item.desc}</p>
+                      <div>
+                        <p className="text-[#131314] font-medium">{item.label}</p>
+                        <p className="text-[#6e6d73] text-sm">{item.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -324,18 +354,18 @@ export default function Home() {
 
         {/* Step 3: MVP Scope */}
         {step === 3 && (
-          <div className="card p-8 animate-fade-in">
+          <div className="glass-card rounded-[32px] p-8 md:p-10 fade-in-up">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 btn-gradient rounded-xl flex items-center justify-center text-xl font-bold">3</div>
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-lg">3</div>
               <div>
-                <h2 className="text-2xl font-bold text-white">MVP Scope</h2>
-                <p className="text-[#a1a1aa]">Do ONE thing exceptionally well</p>
+                <h2 className="text-2xl font-semibold text-[#131314] tracking-tight">MVP Scope</h2>
+                <p className="text-[#6e6d73]">Do ONE thing exceptionally well</p>
               </div>
             </div>
             
             <div className="space-y-6">
               <div>
-                <label className="block text-white font-medium mb-2">Core value (one sentence)</label>
+                <label className="block text-[#131314] font-medium mb-2">Core value (one sentence)</label>
                 <input
                   type="text"
                   value={roadmap.coreValue}
@@ -345,23 +375,23 @@ export default function Home() {
                 />
               </div>
               <div>
-                <label className="block text-white font-medium mb-3">Key features (max 3)</label>
+                <label className="block text-[#131314] font-medium mb-3">Key features (max 3)</label>
                 <div className="space-y-3">
                   {roadmap.features.map((feature, i) => (
-                    <div key={i} className="bg-[#18181b] rounded-xl p-4 border border-[#27272a]">
+                    <div key={i} className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-[#a855f7] font-bold">{i + 1}.</span>
+                        <span className="text-purple-500 font-bold">{i + 1}.</span>
                         <input
                           type="text"
                           value={feature.name}
                           onChange={(e) => updateFeature(i, 'name', e.target.value)}
                           placeholder="Feature name"
-                          className="flex-1 bg-transparent border-none text-white placeholder-[#52525b] focus:outline-none"
+                          className="flex-1 bg-transparent border-none text-[#131314] placeholder-gray-400 focus:outline-none font-medium"
                         />
                         <select
                           value={feature.priority}
                           onChange={(e) => updateFeature(i, 'priority', e.target.value)}
-                          className="bg-[#27272a] border-none rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none"
+                          className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-[#131314] focus:outline-none focus:border-purple-300"
                         >
                           <option value="must-have">🔴 Must</option>
                           <option value="nice-to-have">🟡 Nice</option>
@@ -372,14 +402,14 @@ export default function Home() {
                         value={feature.userStory}
                         onChange={(e) => updateFeature(i, 'userStory', e.target.value)}
                         placeholder="As a [user], I want to [action] so that [benefit]"
-                        className="w-full bg-transparent border-none text-[#a1a1aa] placeholder-[#52525b] text-sm focus:outline-none"
+                        className="w-full bg-transparent border-none text-[#6e6d73] placeholder-gray-400 text-sm focus:outline-none"
                       />
                     </div>
                   ))}
                 </div>
               </div>
               <div>
-                <label className="block text-white font-medium mb-2">What are you NOT building?</label>
+                <label className="block text-[#131314] font-medium mb-2">What are you NOT building?</label>
                 <textarea
                   value={roadmap.notBuilding}
                   onChange={(e) => setRoadmap({ ...roadmap, notBuilding: e.target.value })}
@@ -387,10 +417,8 @@ export default function Home() {
                   className="input h-24 resize-none"
                 />
               </div>
-              <div className="bg-[#a855f7]/10 border border-[#a855f7]/20 rounded-xl p-4">
-                <p className="text-[#c084fc] text-sm">
-                  💡 <strong>6-Week Rule:</strong> If you can&apos;t build it in 6 weeks, scope is too big. Cut until it fits.
-                </p>
+              <div className="tip-box">
+                <p>💡 <strong>6-Week Rule:</strong> If you can&apos;t build it in 6 weeks, scope is too big. Cut until it fits.</p>
               </div>
             </div>
           </div>
@@ -398,12 +426,12 @@ export default function Home() {
 
         {/* Step 4: Tech Stack */}
         {step === 4 && (
-          <div className="card p-8 animate-fade-in">
+          <div className="glass-card rounded-[32px] p-8 md:p-10 fade-in-up">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 btn-gradient rounded-xl flex items-center justify-center text-xl font-bold">4</div>
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-lg">4</div>
               <div>
-                <h2 className="text-2xl font-bold text-white">AI & Tech Stack</h2>
-                <p className="text-[#a1a1aa]">Choose for speed, not perfection</p>
+                <h2 className="text-2xl font-semibold text-[#131314] tracking-tight">AI & Tech Stack</h2>
+                <p className="text-[#6e6d73]">Choose for speed, not perfection</p>
               </div>
             </div>
             
@@ -416,7 +444,7 @@ export default function Home() {
                 { label: 'Hosting', key: 'hosting', options: ['', 'Vercel', 'AWS', 'GCP', 'Railway', 'Render', 'Fly.io'] },
               ].map((field) => (
                 <div key={field.key}>
-                  <label className="block text-white font-medium mb-2">{field.label}</label>
+                  <label className="block text-[#131314] font-medium mb-2">{field.label}</label>
                   <select
                     value={roadmap[field.key as keyof RoadmapData] as string}
                     onChange={(e) => setRoadmap({ ...roadmap, [field.key]: e.target.value })}
@@ -429,22 +457,20 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <div className="bg-[#a855f7]/10 border border-[#a855f7]/20 rounded-xl p-4 mt-6">
-              <p className="text-[#c084fc] text-sm">
-                💡 Use managed services everywhere. Build custom only where it&apos;s your core differentiator.
-              </p>
+            <div className="tip-box mt-6">
+              <p>💡 Use managed services everywhere. Build custom only where it&apos;s your core differentiator.</p>
             </div>
           </div>
         )}
 
         {/* Step 5: Timeline */}
         {step === 5 && (
-          <div className="card p-8 animate-fade-in">
+          <div className="glass-card rounded-[32px] p-8 md:p-10 fade-in-up">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 btn-gradient rounded-xl flex items-center justify-center text-xl font-bold">5</div>
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-lg">5</div>
               <div>
-                <h2 className="text-2xl font-bold text-white">6-Week Timeline</h2>
-                <p className="text-[#a1a1aa]">Your sprint structure to launch</p>
+                <h2 className="text-2xl font-semibold text-[#131314] tracking-tight">6-Week Timeline</h2>
+                <p className="text-[#6e6d73]">Your sprint structure to launch</p>
               </div>
             </div>
             
@@ -458,11 +484,13 @@ export default function Home() {
                 { week: '6', title: 'Launch 🚀', desc: 'Deploy, monitoring, go-to-market', del: 'LIVE PRODUCT' },
               ].map((item) => (
                 <div key={item.week} className="flex gap-4 items-start">
-                  <span className="badge px-3 py-1 text-xs flex-shrink-0">W{item.week}</span>
-                  <div className="flex-1 bg-[#18181b] rounded-xl p-4 border-l-2 border-[#a855f7]">
-                    <h4 className="text-white font-semibold">{item.title}</h4>
-                    <p className="text-[#71717a] text-sm">{item.desc}</p>
-                    <p className="text-[#a855f7] text-sm mt-1">📦 {item.del}</p>
+                  <span className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-bold rounded-xl shadow-md flex-shrink-0">
+                    W{item.week}
+                  </span>
+                  <div className="flex-1 bg-gray-50 rounded-2xl p-4 border-l-4 border-purple-500">
+                    <h4 className="text-[#131314] font-semibold">{item.title}</h4>
+                    <p className="text-[#6e6d73] text-sm">{item.desc}</p>
+                    <p className="text-purple-600 text-sm mt-1 font-medium">📦 {item.del}</p>
                   </div>
                 </div>
               ))}
@@ -472,18 +500,18 @@ export default function Home() {
 
         {/* Step 6: Success Metrics */}
         {step === 6 && (
-          <div className="card p-8 animate-fade-in">
+          <div className="glass-card rounded-[32px] p-8 md:p-10 fade-in-up">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 btn-gradient rounded-xl flex items-center justify-center text-xl font-bold">6</div>
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-lg">6</div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Success Metrics</h2>
-                <p className="text-[#a1a1aa]">Define what winning looks like</p>
+                <h2 className="text-2xl font-semibold text-[#131314] tracking-tight">Success Metrics</h2>
+                <p className="text-[#6e6d73]">Define what winning looks like</p>
               </div>
             </div>
             
             <div className="space-y-6">
               <div>
-                <label className="block text-white font-medium mb-2">North Star Metric</label>
+                <label className="block text-[#131314] font-medium mb-2">North Star Metric</label>
                 <input
                   type="text"
                   value={roadmap.northStar}
@@ -493,7 +521,7 @@ export default function Home() {
                 />
               </div>
               <div>
-                <label className="block text-white font-medium mb-2">30-Day Launch Goals</label>
+                <label className="block text-[#131314] font-medium mb-2">30-Day Launch Goals</label>
                 <textarea
                   value={roadmap.thirtyDayGoals}
                   onChange={(e) => setRoadmap({ ...roadmap, thirtyDayGoals: e.target.value })}
@@ -501,10 +529,8 @@ export default function Home() {
                   className="input h-28 resize-none"
                 />
               </div>
-              <div className="bg-[#a855f7]/10 border border-[#a855f7]/20 rounded-xl p-4">
-                <p className="text-[#c084fc] text-sm">
-                  💡 <strong>Only 3 metrics matter:</strong> Are they using it? Coming back? Willing to pay?
-                </p>
+              <div className="tip-box">
+                <p>💡 <strong>Only 3 metrics matter:</strong> Are they using it? Coming back? Willing to pay?</p>
               </div>
             </div>
           </div>
@@ -515,7 +541,7 @@ export default function Home() {
           <div className="flex justify-between mt-10">
             <button
               onClick={() => setStep(step - 1)}
-              className="text-[#a1a1aa] hover:text-white transition flex items-center gap-2 px-4 py-2"
+              className="text-[#6e6d73] hover:text-[#131314] transition flex items-center gap-2 px-4 py-2 font-medium"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -524,9 +550,9 @@ export default function Home() {
             </button>
             
             {step < totalSteps - 1 ? (
-              <button onClick={() => setStep(step + 1)} className="btn-gradient px-8 py-3 rounded-xl flex items-center gap-2">
+              <button onClick={() => setStep(step + 1)} className="btn-primary px-8 py-3 flex items-center gap-2">
                 Continue
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
@@ -534,7 +560,7 @@ export default function Home() {
               <button
                 onClick={handleFinalSubmit}
                 disabled={isSubmitting}
-                className="btn-gradient px-10 py-3 rounded-xl"
+                className="btn-primary px-10 py-3"
               >
                 {isSubmitting ? 'Saving...' : 'Complete Roadmap 🚀'}
               </button>
@@ -544,9 +570,9 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="text-center py-8 text-[#52525b] text-sm border-t border-[#18181b]">
-        <a href="https://1labs.ai" className="hover:text-[#a1a1aa] transition">
-          Built by <span className="gradient-text">1Labs.ai</span> — Ship AI Products 10× Faster
+      <footer className="text-center py-8 text-gray-400 text-sm border-t border-gray-100">
+        <a href="https://1labs.ai" className="hover:text-purple-600 transition">
+          Built by <span className="gradient-text font-semibold">1Labs.ai</span> — Ship AI Products 10× Faster
         </a>
       </footer>
     </main>
