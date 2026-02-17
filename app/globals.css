@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
-
 :root {
   --color-primary: #131314;
   --color-text: #131314;
@@ -10,6 +8,14 @@
   --color-bg: #ffffff;
   --color-purple: #A855F7;
   --color-pink: #EC4899;
+}
+
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/intertight/v7/NGSnv5HMAFg6IuGlBNMjxJEL2VmU3NS7Z2mjDw6qXCRToK8EPg.woff2) format('woff2');
 }
 
 * {
@@ -23,9 +29,9 @@ html {
 }
 
 body {
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text);
+  font-family: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #ffffff;
+  color: #131314;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -33,160 +39,4 @@ body {
 ::selection {
   background: #f3e8ff;
   color: #7c3aed;
-}
-
-/* Gradient Text - ProductOS style */
-.gradient-text {
-  background: linear-gradient(90deg, #A855F7 0%, #EC4899 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Animated Gradient Text */
-.gradient-text-animated {
-  background: linear-gradient(90deg, #A855F7, #EC4899, #F97316, #A855F7);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-shift 4s ease infinite;
-}
-
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Glassmorphic elements */
-.glass {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 -1px 2px rgba(0,0,0,0.02), 0 -4px 8px rgba(0,0,0,0.02), 0 0 0 1px rgba(0,0,0,0.05);
-}
-
-/* Primary Button - 1Labs style */
-.btn-primary {
-  background: rgba(19, 19, 20, 0.95);
-  backdrop-filter: blur(20px) saturate(180%);
-  color: white;
-  font-weight: 500;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 25px -5px rgba(126, 34, 206, 0.2);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-primary:hover {
-  transform: scale(1.02);
-}
-
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Input styling */
-.input {
-  width: 100%;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 14px 16px;
-  font-size: 15px;
-  color: var(--color-text);
-  transition: all 0.2s ease;
-}
-
-.input::placeholder {
-  color: #9ca3af;
-}
-
-.input:focus {
-  outline: none;
-  border-color: var(--color-purple);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
-}
-
-/* Progress bar */
-.progress-bar {
-  background: #e5e7eb;
-  border-radius: 9999px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #A855F7, #EC4899);
-  transition: width 0.3s ease;
-}
-
-/* Badge */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px 12px;
-  border-radius: 9999px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-text-light);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-/* Tip box */
-.tip-box {
-  background: linear-gradient(135deg, #faf5ff 0%, #fdf2f8 100%);
-  border: 1px solid rgba(168, 85, 247, 0.2);
-  border-radius: 16px;
-  padding: 16px;
-}
-
-.tip-box p {
-  color: #7c3aed;
-  font-size: 14px;
-}
-
-/* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
-}
-
-/* Card hover */
-.card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
-}
-
-/* Background gradient */
-.bg-gradient-subtle {
-  background: linear-gradient(to bottom, white, #faf5ff 50%, white);
 }
