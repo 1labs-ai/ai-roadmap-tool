@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useUser, SignIn, SignUp, UserButton } from '@clerk/nextjs';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../convex/_generated/api';
+import Link from 'next/link';
 
 const ROADMAP_COST = 5;
 
@@ -17,7 +18,7 @@ export default function Home() {
   const [gateState, setGateState] = useState<GateState>('closed');
   
   // Convex queries/mutations
-  const credits = useQuery(api.users.getCredits, isSignedIn && user?.id ? { clerkId: user.id } : 'skip');
+  const userPlan = useQuery(api.users.getUserPlan, isSignedIn && user?.id ? { clerkId: user.id } : 'skip');
   const getOrCreateUser = useMutation(api.users.getOrCreateUser);
   const deductCredits = useMutation(api.users.deductCredits);
 
@@ -48,6 +49,10 @@ export default function Home() {
   const [generatedRoadmap, setGeneratedRoadmap] = useState('');
   const [showResult, setShowResult] = useState(false);
 
+  const credits = userPlan?.credits ?? 0;
+  const plan = userPlan?.plan ?? 'free';
+  const isUnlimited = plan === 'unlimited';
+
   const handleGenerate = async () => {
     // Check auth first
     if (!isSignedIn) {
@@ -55,8 +60,8 @@ export default function Home() {
       return;
     }
 
-    // Check credits
-    if ((credits ?? 0) < ROADMAP_COST) {
+    // Check credits (unlimited plan bypasses)
+    if (!isUnlimited && credits < ROADMAP_COST) {
       setGateState('no-credits');
       return;
     }
@@ -66,7 +71,7 @@ export default function Home() {
     setShowResult(true);
 
     try {
-      // Deduct credits first
+      // Deduct credits first (unlimited plan won't actually deduct)
       await deductCredits({
         clerkId: user!.id,
         amount: ROADMAP_COST,
@@ -100,6 +105,11 @@ export default function Home() {
   };
 
   const closeGate = () => setGateState('closed');
+
+  const formatCredits = (credits: number) => {
+    if (credits >= 999999) return '∞';
+    return credits.toLocaleString();
+  };
 
   // Auth Gate Modal
   const AuthGate = () => {
@@ -176,7 +186,7 @@ export default function Home() {
           )}
 
           {gateState === 'no-credits' && (
-            <div style={{ padding: 40, textAlign: 'center', maxWidth: 400 }}>
+            <div style={{ padding: 40, textAlign: 'center', maxWidth: 420 }}>
               <div
                 style={{
                   width: 64,
@@ -196,20 +206,46 @@ export default function Home() {
                 Need more credits
               </h2>
               <p style={{ color: '#6e6d73', marginBottom: 8, lineHeight: 1.5 }}>
-                You have <strong>{credits ?? 0} credits</strong>.
+                You have <strong>{formatCredits(credits)} credits</strong> on the <strong style={{ textTransform: 'capitalize' }}>{plan}</strong> plan.
               </p>
               <p style={{ color: '#6e6d73', marginBottom: 24, lineHeight: 1.5 }}>
                 Generating a roadmap costs <strong>{ROADMAP_COST} credits</strong>.
               </p>
-              <button
-                onClick={() => {
-                  // TODO: Redirect to Polar checkout
-                  window.open('https://1labs.ai/pricing', '_blank');
-                }}
+              
+              {/* Plan comparison mini */}
+              <div style={{ 
+                background: '#f9fafb', 
+                borderRadius: 12, 
+                padding: 16, 
+                marginBottom: 24,
+                textAlign: 'left',
+              }}>
+                <p style={{ fontSize: 12, color: '#6e6d73', marginBottom: 12, fontWeight: 500 }}>
+                  UPGRADE OPTIONS:
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 14, color: '#131314' }}>Starter</span>
+                    <span style={{ fontSize: 14, color: '#7c3aed', fontWeight: 600 }}>100 credits/mo • $9</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 14, color: '#131314' }}>Pro</span>
+                    <span style={{ fontSize: 14, color: '#7c3aed', fontWeight: 600 }}>500 credits/mo • $29</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 14, color: '#131314' }}>Unlimited</span>
+                    <span style={{ fontSize: 14, color: '#db2777', fontWeight: 600 }}>∞ credits • $79</span>
+                  </div>
+                </div>
+              </div>
+              
+              <Link
+                href="/pricing"
                 style={{
+                  display: 'block',
                   width: '100%',
                   padding: '14px 24px',
-                  background: '#131314',
+                  background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
                   color: 'white',
                   border: 'none',
                   borderRadius: 9999,
@@ -217,10 +253,12 @@ export default function Home() {
                   fontWeight: 500,
                   cursor: 'pointer',
                   marginBottom: 12,
+                  textDecoration: 'none',
+                  textAlign: 'center',
                 }}
               >
-                Get More Credits
-              </button>
+                View Pricing Plans →
+              </Link>
               <button
                 onClick={closeGate}
                 style={{
@@ -247,7 +285,7 @@ export default function Home() {
   if (showResult) {
     return (
       <div style={{ minHeight: '100vh', background: '#fff', fontFamily: "'Inter Tight', system-ui, sans-serif" }}>
-        <Header credits={credits ?? 0} isSignedIn={isSignedIn ?? false} setGateState={setGateState} />
+        <Header credits={credits} plan={plan} isSignedIn={isSignedIn ?? false} setGateState={setGateState} />
 
         <main style={{ maxWidth: 800, margin: '0 auto', padding: '100px 24px 80px' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
@@ -327,7 +365,7 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: "'Inter Tight', system-ui, sans-serif" }}>
-      <Header credits={credits ?? 0} isSignedIn={isSignedIn ?? false} setGateState={setGateState} />
+      <Header credits={credits} plan={plan} isSignedIn={isSignedIn ?? false} setGateState={setGateState} />
 
       <main style={{ maxWidth: 640, margin: '0 auto', padding: '100px 24px 80px', textAlign: 'center' }}>
         {/* Hero */}
@@ -464,7 +502,11 @@ export default function Home() {
 
             <p style={{ color: '#9ca3af', fontSize: 13, textAlign: 'center', marginTop: 4 }}>
               {isSignedIn ? (
-                <>Uses {ROADMAP_COST} credits • You have {credits ?? '...'} credits</>
+                isUnlimited ? (
+                  <>Unlimited plan • Generate all you want!</>
+                ) : (
+                  <>Uses {ROADMAP_COST} credits • You have {formatCredits(credits)} credits</>
+                )
               ) : (
                 <>Sign up free to get 50 credits</>
               )}
@@ -480,7 +522,22 @@ export default function Home() {
 }
 
 // Header Component
-function Header({ credits, isSignedIn, setGateState }: { credits: number; isSignedIn: boolean; setGateState: (s: GateState) => void }) {
+function Header({ credits, plan, isSignedIn, setGateState }: { credits: number; plan: string; isSignedIn: boolean; setGateState: (s: GateState) => void }) {
+  const formatCredits = (credits: number) => {
+    if (credits >= 999999) return '∞';
+    return credits.toLocaleString();
+  };
+
+  const getPlanBadgeStyle = (plan: string) => {
+    const styles: Record<string, { bg: string; text: string; border: string }> = {
+      free: { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb' },
+      starter: { bg: '#dbeafe', text: '#1e40af', border: '#93c5fd' },
+      pro: { bg: '#faf5ff', text: '#7c3aed', border: '#c4b5fd' },
+      unlimited: { bg: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 100%)', text: '#db2777', border: '#f9a8d4' },
+    };
+    return styles[plan] || styles.free;
+  };
+
   return (
     <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, padding: '16px 24px', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -502,8 +559,25 @@ function Header({ credits, isSignedIn, setGateState }: { credits: number; isSign
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', background: 'linear-gradient(135deg, #faf5ff 0%, #fdf2f8 100%)', border: '1px solid #e9d5ff', borderRadius: 9999, fontSize: 14, fontWeight: 500, color: '#7c3aed' }}>
                 <span style={{ fontSize: 16 }}>✨</span>
-                <span>{credits} credits</span>
+                <span>{formatCredits(credits)} credits</span>
               </div>
+              <Link 
+                href="/pricing"
+                style={{
+                  padding: '6px 12px',
+                  background: getPlanBadgeStyle(plan).bg,
+                  color: getPlanBadgeStyle(plan).text,
+                  border: `1px solid ${getPlanBadgeStyle(plan).border}`,
+                  borderRadius: 9999,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  textDecoration: 'none',
+                }}
+              >
+                {plan}
+              </Link>
               <UserButton
                 appearance={{
                   elements: {
