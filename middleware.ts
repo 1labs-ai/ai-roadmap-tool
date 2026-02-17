@@ -6,6 +6,9 @@ const isPublicRoute = createRouteMatcher([
   '/pricing',
   '/api/generate',
   '/api/webhooks(.*)', // Clerk webhooks must be public
+  '/sso-callback(.*)', // SSO callback for OAuth providers
+  '/sign-in(.*)',
+  '/sign-up(.*)',
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
