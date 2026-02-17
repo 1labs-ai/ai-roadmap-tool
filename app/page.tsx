@@ -1,5 +1,8 @@
 'use client';
 
+// Force dynamic rendering to ensure env vars are available
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react';
 import { useUser, SignIn, SignUp, UserButton } from '@clerk/nextjs';
 import { useQuery, useMutation } from 'convex/react';
